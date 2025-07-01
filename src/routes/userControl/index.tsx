@@ -71,7 +71,7 @@ function RouteComponent() {
             <h1 className="text-2xl font-semibold mb-6">Управление пользователями</h1>
             <Button title="Add new user" icon={<PlusOutlined />} type="primary" onClick={showModal}></Button>
             <Modal
-              title="Basic Modal"
+              title="Add New User"
               closable={{ 'aria-label': 'Custom Close Button' }}
               open={isModalOpen}
               onOk={handleOk}
