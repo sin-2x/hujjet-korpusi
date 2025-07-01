@@ -5,7 +5,7 @@ import "./index.css";
 import { AndProvider } from "./shared/lib";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { client } from "./shared";
-
+//c
 const router = createRouter({ routeTree });
 
 declare module "@tanstack/react-router" {
