@@ -1,28 +1,30 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authServices } from "./auth.services";
-import { message } from "antd";
+import type { MessageInstance } from "antd/es/message/interface";
 
 export const authApi = {
-   useLoginMutation: () => {
+   useLoginMutation: (messageApi: MessageInstance) => {
+      const queryClient = useQueryClient();
       const mutation = useMutation({
          mutationFn: authServices.login,
          onSuccess: () => {
-            message.success("Вы успешно вошли в систему");
+            messageApi.success("Вы успешно вошли в систему");
+            queryClient.invalidateQueries({ queryKey: ["me"] });
          },
          onError: () => {
-            message.error("Неправильный логин или пароль");
+            messageApi.error("Неправильный логин или пароль");
          },
       });
       return mutation;
    },
-   useRegisterMutation: () => {
+   useRegisterMutation: (messageApi: MessageInstance) => {
       const mutation = useMutation({
          mutationFn: authServices.register,
          onSuccess: () => {
-            message.success("Вы успешно вошли в систему");
+            messageApi.success("Вы успешно вошли в систему");
          },
          onError: () => {
-            message.error("Неправильный логин или пароль");
+            messageApi.error("Неправильный логин или пароль");
          },
       });
       return mutation;

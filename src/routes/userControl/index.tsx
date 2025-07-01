@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/userControl/")({
    component: RouteComponent,
-   //beforeLoad: authGuard,
+  //  beforeLoad: authGuard,
 });
 
 import { Space, Table, Tag } from 'antd';

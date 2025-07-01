@@ -1,11 +1,8 @@
+import { ImFilesEmpty } from "react-icons/im";
+import { FaUsersCog } from "react-icons/fa";
+import { AiOutlineBarChart } from "react-icons/ai";
 import React, { useState } from "react";
-import {
-   MenuFoldOutlined,
-   MenuUnfoldOutlined,
-   UploadOutlined,
-   UserAddOutlined,
-   UserOutlined,
-} from "@ant-design/icons";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import { Outlet, useRouter } from "@tanstack/react-router";
 import { RouteNames } from "@/shared";
@@ -20,74 +17,94 @@ export const MainLayout: React.FC = () => {
    } = theme.useToken();
 
    return (
-      <Layout>
-         <Sider
-            trigger={null}
-            collapsible
-            collapsed={collapsed}
-            width={250}
+      <div>
+         <Header
             style={{
+               padding: 0,
                background: colorBgContainer,
-               height: "100vh",
+               position: "sticky",
+               top: 0,
+               zIndex: 1,
             }}
          >
-            <div className="demo-logo-vertical" />
-            <Menu
-               theme="light"
-               mode="inline"
-               defaultSelectedKeys={["1"]}
-               items={[
-                  {
-                     key: "1",
-                     icon: <UserOutlined />,
-                     label: "Statistics",
-                     onClick: () =>
-                        navigate({ to: RouteNames.Statistics as string }),
-                  },
-                  {
-                     key: "2",
-                     icon: <UserAddOutlined />,
-                     label: "User Control",
-                     onClick: () =>
-                        navigate({ to: RouteNames.UserControl as string }),
-                  },
-                  {
-                     key: "3",
-                     icon: <UploadOutlined />,
-                     label: "File Management",
-                     onClick: () =>
-                        navigate({ to: RouteNames.FileManagement as string }),
-                  },
-               ]}
-            />
-         </Sider>
-         <Layout>
-            <Header style={{ padding: 0, background: colorBgContainer }}>
-               <Button
-                  type="text"
-                  icon={
-                     collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />
-                  }
-                  onClick={() => setCollapsed(!collapsed)}
-                  style={{
-                     fontSize: "16px",
-                     width: 64,
-                     height: 64,
-                  }}
-               />
-            </Header>
-            <Content
+            <Button
+               type="text"
+               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+               onClick={() => setCollapsed(!collapsed)}
                style={{
-                  margin: "24px 16px",
-                  padding: 24,
-                  minHeight: 280,
+                  fontSize: "16px",
+                  width: 64,
+                  height: 64,
+               }}
+            />
+         </Header>
+         <Layout>
+            <Sider
+               trigger={null}
+               collapsible
+               collapsed={collapsed}
+               width={250}
+               style={{
+                  position: "sticky",
+                  top: 64, // высота Header'а
+                  left: 0,
+                  height: "calc(100vh - 64px)",
                   background: colorBgContainer,
-                  borderRadius: borderRadiusLG,
                }}
             >
-               <Outlet />
-            </Content>
+               <Menu
+                  theme="light"
+                  mode="inline"
+                  defaultSelectedKeys={["1"]}
+                  style={{
+                     display: "flex",
+                     flexDirection: "column",
+                     alignItems: "center",
+                     justifyContent: "center",
+                     height: "100%",
+                     gap: "10px",
+                  }}
+                  items={[
+                     {
+                        key: "1",
+                        icon: <AiOutlineBarChart />,
+                        label: "Statistics",
+                        onClick: () =>
+                           navigate({ to: RouteNames.Statistics as string }),
+                     },
+                     {
+                        key: "2",
+                        icon: <FaUsersCog />,
+                        label: "User Control",
+                        onClick: () =>
+                           navigate({ to: RouteNames.UserControl as string }),
+                     },
+                     {
+                        key: "3",
+                        icon: <ImFilesEmpty />,
+                        label: "File Management",
+                        onClick: () =>
+                           navigate({
+                              to: RouteNames.FileManagement as string,
+                           }),
+                     },
+                  ]}
+               />
+            </Sider>
+            <Layout>
+               <Content
+                  style={{
+                     margin: "24px 16px",
+                     padding: 24,
+                     minHeight: 280,
+                     background: colorBgContainer,
+                     borderRadius: borderRadiusLG,
+                  }}
+               >
+                  <Outlet />
+               </Content>
+            </Layout>
          </Layout>
-      </Layout>
+      </div>
    );
 };

@@ -15,7 +15,7 @@ export const authServices = {
       const formData = new FormData();
       formData.append("username", form.username);
       formData.append("password", form.password);
-      const response = await $api.post("/auth/login/", formData);
+      const response = await $api.post("/admin/login/", formData);
       return response.data;
    },
 

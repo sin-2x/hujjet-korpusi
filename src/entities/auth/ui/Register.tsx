@@ -1,6 +1,6 @@
 import React from "react";
 import type { FormProps } from "antd";
-import { Button, Form, Input, Space } from "antd";
+import { App, Button, Form, Input, Space } from "antd";
 import { useRouter } from "@tanstack/react-router";
 import { authApi } from "@/entities/auth/api";
 import type { RegisterValueType } from "@/shared";
@@ -8,12 +8,13 @@ import { useAuthStore } from "@/entities";
 import { useForm } from "antd/es/form/Form";
 
 export const Register: React.FC = () => {
+   const { message } = App.useApp();
    const {
       mutate: register,
       isPending,
       data,
       isSuccess,
-   } = authApi.useRegisterMutation();
+   } = authApi.useRegisterMutation(message);
    const { setToken, setIsAuth } = useAuthStore();
 
    const [form] = useForm();
@@ -31,7 +32,7 @@ export const Register: React.FC = () => {
          form.resetFields();
       }
    }, [data, register, isSuccess, setIsAuth, setToken]);
-   
+
    return (
       <Space
          style={{
@@ -39,7 +40,7 @@ export const Register: React.FC = () => {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            height: "100vh",
+            // height: "100vh",
             width: "100%",
          }}
       >

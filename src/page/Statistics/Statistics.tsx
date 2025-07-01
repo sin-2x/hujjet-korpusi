@@ -22,6 +22,7 @@ export const StatisticsPanel: React.FC = () => {
          totalSizeMB: 1342.5,
       });
    }, []);
+   
 
    return (
       <div className="p-6">

@@ -1,6 +1,6 @@
 import React from "react";
 import type { FormProps } from "antd";
-import { Button, Form, Input, Space } from "antd";
+import { App, Button, Form, Input, Space } from "antd";
 import { useRouter } from "@tanstack/react-router";
 import { authApi } from "@/entities/auth/api";
 import { useAuthStore } from "@/entities";
@@ -8,12 +8,13 @@ import { useForm } from "antd/es/form/Form";
 import type { LoginValueType } from "@/shared";
 
 export const Login: React.FC = () => {
+   const { message } = App.useApp();
    const {
       mutate: login,
       isPending,
       data,
       isSuccess,
-   } = authApi.useLoginMutation();
+   } = authApi.useLoginMutation(message);
 
    const { setIsAuth, setToken } = useAuthStore();
    const [form] = useForm();
@@ -40,7 +41,7 @@ export const Login: React.FC = () => {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            height: "100vh",
+            // height: "100vh",
             width: "100%",
          }}
       >
