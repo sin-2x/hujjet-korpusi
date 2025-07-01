@@ -28,7 +28,7 @@ export const Login: React.FC = () => {
          setToken(data.token);
          setIsAuth(true);
          form.resetFields();
-         navigate({ to: "/" });
+         navigate({ to: "/statistics" });
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [data, isSuccess, setIsAuth, setToken, login]);

@@ -27,11 +27,11 @@ export const Register: React.FC = () => {
       if (isSuccess) {
          setIsAuth(true);
          setToken(data.token);
-         navigate({ to: "/" });
+         navigate({ to: "/statistics" });
          form.resetFields();
       }
    }, [data, register, isSuccess, setIsAuth, setToken]);
-
+   
    return (
       <Space
          style={{

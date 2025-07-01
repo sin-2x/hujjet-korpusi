@@ -1,3 +1,4 @@
+
 export type User = {
    name: string;
    surname: string;
@@ -26,3 +27,11 @@ export type RegisterResType = Omit<
    Omit<LoginReturnType, "first_name">,
    "last_name"
 >;
+export enum RouteNames {
+   Home = "/",
+   Login = "/login",
+   Register = "/register",
+   Statistics = "/statistics",
+   UserControl = "/userControl",
+   FileManagement = "/fileManagement",
+}
