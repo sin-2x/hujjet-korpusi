@@ -1,12 +1,14 @@
 import { authGuard } from "@/shared";
 import { createFileRoute } from "@tanstack/react-router";
+import { PlusOutlined } from "@ant-design/icons";
 
 export const Route = createFileRoute("/userControl/")({
    component: RouteComponent,
    //beforeLoad: authGuard,
 });
 
-import { Space, Table, Tag } from 'antd';
+import { Button, Flex, Input, Modal, Space, Table, Tag } from 'antd';
+import { useState } from "react";
 
 const { Column, ColumnGroup } = Table;
 
@@ -47,10 +49,42 @@ const data: DataType[] = [
 ];
 
 function RouteComponent() {
+
+   const [isModalOpen, setIsModalOpen] = useState(false);
+
+   const showModal = () => {
+     setIsModalOpen(true);
+   };
+
+   const handleOk = () => {
+     setIsModalOpen(false);
+   };
+
+   const handleCancel = () => {
+     setIsModalOpen(false);
+   };
+
    return (
       <>
       <div className="p-6">
-         <h1 className="text-2xl font-semibold mb-6">Управление пользователями</h1>
+         <Flex justify="space-between" align="center">
+            <h1 className="text-2xl font-semibold mb-6">Управление пользователями</h1>
+            <Button title="Add new user" icon={<PlusOutlined />} type="primary" onClick={showModal}></Button>
+            <Modal
+              title="Basic Modal"
+              closable={{ 'aria-label': 'Custom Close Button' }}
+              open={isModalOpen}
+              onOk={handleOk}
+              onCancel={handleCancel}
+            >
+               <Space direction="vertical" style={{ width: '100%' }}>
+                  <Input placeholder="Name" />
+                  <Input placeholder="Surname" />
+                  <Input placeholder="Username" />
+                  <Input.Password placeholder="Password" />
+               </Space>
+            </Modal>
+         </Flex>
 
          <Table<DataType> dataSource={data} style={{marginTop: 16}}>
            <ColumnGroup title="Name">
