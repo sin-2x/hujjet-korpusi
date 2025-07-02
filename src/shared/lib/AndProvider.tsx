@@ -15,6 +15,7 @@ export const AndProvider: React.FC<PropsWithChildren<unknown>> = ({
                Button: {
                   //   colorPrimary: "#00b96b",
                   fontWeight: 600,
+                  colorError: "crimson",
                },
             },
          }}

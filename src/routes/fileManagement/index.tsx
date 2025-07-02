@@ -1,11 +1,8 @@
+import { FileManagement } from "@/page";
 import { authGuard } from "@/shared";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/fileManagement/")({
-   component: RouteComponent,
+   component: FileManagement,
    beforeLoad: authGuard,
 });
-
-function RouteComponent() {
-   return <div>Hello "/fileManagement/"!</div>;
-}
