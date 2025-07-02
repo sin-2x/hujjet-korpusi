@@ -21,6 +21,7 @@ export const Login: React.FC = () => {
    const { navigate } = useRouter();
 
    const onFinish: FormProps<LoginValueType>["onFinish"] = (values) => {
+      console.log("Success:", values);
       login(values);
    };
 
@@ -89,20 +90,7 @@ export const Login: React.FC = () => {
                   Submit
                </Button>
             </Form.Item>
-            <Form.Item label={null}>
-               <Button
-                  type="link"
-                  onClick={() => {
-                     navigate({ to: "/auth" });
-                  }}
-                  htmlType="submit"
-                  style={{
-                     width: "100%",
-                  }}
-               >
-                  Register
-               </Button>
-            </Form.Item>
+
          </Form>
       </Space>
    );

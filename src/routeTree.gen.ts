@@ -14,7 +14,6 @@ import { Route as UserControlIndexRouteImport } from './routes/userControl/index
 import { Route as StatisticsIndexRouteImport } from './routes/statistics/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as FileManagementIndexRouteImport } from './routes/fileManagement/index'
-import { Route as AuthIndexRouteImport } from './routes/auth/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -41,15 +40,9 @@ const FileManagementIndexRoute = FileManagementIndexRouteImport.update({
   path: '/fileManagement/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthIndexRoute = AuthIndexRouteImport.update({
-  id: '/auth/',
-  path: '/auth/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthIndexRoute
   '/fileManagement': typeof FileManagementIndexRoute
   '/login': typeof LoginIndexRoute
   '/statistics': typeof StatisticsIndexRoute
@@ -57,7 +50,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthIndexRoute
   '/fileManagement': typeof FileManagementIndexRoute
   '/login': typeof LoginIndexRoute
   '/statistics': typeof StatisticsIndexRoute
@@ -66,7 +58,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/auth/': typeof AuthIndexRoute
   '/fileManagement/': typeof FileManagementIndexRoute
   '/login/': typeof LoginIndexRoute
   '/statistics/': typeof StatisticsIndexRoute
@@ -74,25 +65,12 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/auth'
-    | '/fileManagement'
-    | '/login'
-    | '/statistics'
-    | '/userControl'
+  fullPaths: '/' | '/fileManagement' | '/login' | '/statistics' | '/userControl'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/auth'
-    | '/fileManagement'
-    | '/login'
-    | '/statistics'
-    | '/userControl'
+  to: '/' | '/fileManagement' | '/login' | '/statistics' | '/userControl'
   id:
     | '__root__'
     | '/'
-    | '/auth/'
     | '/fileManagement/'
     | '/login/'
     | '/statistics/'
@@ -101,7 +79,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthIndexRoute: typeof AuthIndexRoute
   FileManagementIndexRoute: typeof FileManagementIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
   StatisticsIndexRoute: typeof StatisticsIndexRoute
@@ -145,19 +122,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FileManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/': {
-      id: '/auth/'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthIndexRoute: AuthIndexRoute,
   FileManagementIndexRoute: FileManagementIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
   StatisticsIndexRoute: StatisticsIndexRoute,
