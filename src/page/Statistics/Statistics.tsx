@@ -11,7 +11,7 @@ import { statisticsApi } from "@/entities/statistics/api/statistics.api";
 
 export const StatisticsPanel: React.FC = () => {
   const { data, isLoading, isError } = statisticsApi.useStatisticsQuery();
-
+  console.log(data);
   if (isLoading) return <Spin size="large" />;
   if (isError || !data) return <div>Ошибка при загрузке статистики</div>;
 

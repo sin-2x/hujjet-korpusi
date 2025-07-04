@@ -1,122 +1,47 @@
+import { BsFiletypeTxt } from "react-icons/bs";
 import React, { useState } from "react";
-import { Button, Flex, Space, Spin, Table, Tag } from "antd";
-import type { TableProps } from "antd";
-
-import { createStyles } from "antd-style";
-import { fileApi } from "@/entities";
-import { formatDate, type File } from "@/shared";
-const useStyle = createStyles(({ css, token }) => {
-   const { antCls } = token as unknown as { antCls: string };
-   return {
-      customTable: css`
-         ${antCls}-table {
-            ${antCls}-table-container {
-               ${antCls}-table-body,
-               ${antCls}-table-content {
-                  scrollbar-width: thin;
-                  scrollbar-color: #eaeaea transparent;
-                  scrollbar-gutter: stable;
-               }
-            }
-         }
-
-         .row-unverified {
-            background-color: #fff1f0 !important;
-         }
-      `,
-   };
-});
+import { Flex, Space, Tag } from "antd";
+import { Typography, type TableProps } from "antd";
+import {
+   DeleteFileButton,
+   DownloadButton,
+   fileApi,
+   SearchFile,
+   VerifyButton,
+} from "@/entities";
+import {
+   dataWithKey,
+   formatDate,
+   TableComponent,
+   useDebounce,
+   useStyle,
+   type File,
+} from "@/shared";
+import { FaDownload } from "react-icons/fa";
 
 type TableRowSelection<T extends object = object> =
    TableProps<T>["rowSelection"];
 
-interface DataType extends Omit<File, "uuid" | "file_path"> {
+interface DataType extends File {
    key: React.Key;
 }
 
-// const columns: TableColumnsType<DataType> = [
-//    { title: "Title", dataIndex: "title" },
-//    { title: "Content", dataIndex: "content" },
-//    { title: "File size", dataIndex: "file_size" },
-//    { title: "File type", dataIndex: "file_type" },
-//    { title: "Verified", dataIndex: "verified" },
-//    { title: "Status", dataIndex: "status" },
-//    { title: "Created at", dataIndex: "created_at" },
-//    { title: "Actions", dataIndex: "actions" },
-// ];
-const columns: TableProps<DataType>["columns"] = [
-   {
-      title: "Title",
-      dataIndex: "title",
-      key: "name",
-      render: (text) => <>{text}</>,
-   },
-   {
-      title: "Content",
-      dataIndex: "content",
-      key: "content",
-   },
-   {
-      title: "File size",
-      dataIndex: "file_size",
-      key: "file_size",
-      render: (text) => <>{text}b</>,
-   },
-   {
-      title: "File type",
-      dataIndex: "file_type",
-      key: "file_type",
-      render: (_, text) => {
-         switch (text.file_type) {
-            case "doc":
-               return <Tag color="blue">doc</Tag>;
-            case "docx":
-               return <Tag color="blue">docx</Tag>;
-            case "pdf":
-               return <Tag color="red">pdf</Tag>;
-            case "xlsx":
-               return <Tag color="green">xls</Tag>;
-         }
-      },
-   },
-   {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-   },
-   {
-      title: "Created at",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (text) => <>{formatDate(text)}</>,
-   },
-   {
-      title: "Action",
-      key: "action",
-      render: (_, element) => (
-         <Space>
-            <Button type="primary" danger>
-               удалить
-            </Button>
-            <Button
-               type="primary"
-               download={element.download_url}
-               disabled={!element.download_url}
-            >
-               скачать
-            </Button>
-         </Space>
-      ),
-   },
-];
 export const FileManagement: React.FC = () => {
-   const { data, isError } = fileApi.useGetAllFilesQuery();
-   console.log(data);
-   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
    const { styles } = useStyle();
 
+   const [currentPage, setCurrentPage] = useState(1);
+   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+   const [searchValue, setSearchValue] = useState("");
+   const debouncedSearchValue = useDebounce(searchValue, 500);
+
+   const { data, isLoading } = fileApi.useGetAllFilesQuery(currentPage);
+   const { mutate: verifyFiles } = fileApi.useVerifyFilesMutation();
+   const { mutate: downloadFile } = fileApi.useDownloadFileMutation();
+   const { mutate: deleteFile } = fileApi.useDeleteFileMutation();
+   const { data: searchData, isLoading: searchLoading } =
+      fileApi.useGetSearchFilesQuery(debouncedSearchValue);
+
    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-      console.log("selectedRowKeys changed: ", newSelectedRowKeys);
       setSelectedRowKeys(newSelectedRowKeys);
    };
 
@@ -125,63 +50,157 @@ export const FileManagement: React.FC = () => {
       onChange: onSelectChange,
    };
 
-   //    const dataSource = React.useMemo(() => {
-   //       const tableData = data?.results.map<Record<keyof DataType, unknown>>(
-   //          (element, i) => ({
-   //             key: i,
-   //             title: element.title,
-   //             content: element.content,
-   //             file_size: element.file_size,
-   //             file_type: element.file_type,
-   //             verified: element.verified ? "да" : "нет",
-   //             status: element.status,
-   //             created_at: formatDate(element.created_at),
-   //             actions: (
-   //                <Space>
-   //                   <Button type="primary" danger>
-   //                      удалить
-   //                   </Button>
-   //                   <Button
-   //                      type="primary"
-   //                      download={element.download_url}
-   //                      disabled={!element.download_url}
-   //                   >
-   //                      скачать
-   //                   </Button>
-   //                </Space>
-   //             ),
-   //          })
-   //       );
+   const keyData = dataWithKey(
+      {
+         data: data?.results,
+         searchData: searchData?.results,
+      },
+      searchValue,
+      "uuid"
+   );
+   const getSelectedVerificationStatus = ():
+      | "verified"
+      | "unverified"
+      | "mixed"
+      | null => {
+      const selectedItems = keyData?.filter((item) =>
+         selectedRowKeys.includes(item.key)
+      );
+      if (!selectedItems || selectedItems.length === 0) return null;
 
-   //       return tableData || [];
-   //    }, [data?.results]);
+      const allVerified = selectedItems.every((item) => item.is_verified);
+      const allUnverified = selectedItems.every((item) => !item.is_verified);
 
-   const keyData = data?.results?.map((elements) => {
-      return {
-         key: elements.uuid,
-         ...elements,
-      };
-   });
+      if (allVerified) return "verified";
+      if (allUnverified) return "unverified";
+      return "mixed";
+   };
 
-   if (isError) return <Spin size="large" />;
-
-   const hasSelected = selectedRowKeys.length > 0;
+   const columns: TableProps<DataType>["columns"] = [
+      {
+         title: "Title",
+         dataIndex: "title",
+         key: "name",
+         render: (text) => <>{text}</>,
+      },
+      {
+         title: "Content",
+         dataIndex: "content",
+         key: "content",
+      },
+      {
+         title: "File size",
+         dataIndex: "file_size",
+         key: "file_size",
+         render: (text) => <>{text}b</>,
+      },
+      {
+         title: "File type",
+         dataIndex: "file_type",
+         key: "file_type",
+         render: (_, text) => {
+            switch (text.file_type) {
+               case "doc":
+                  return <Tag color="blue">doc</Tag>;
+               case "docx":
+                  return <Tag color="blue">docx</Tag>;
+               case "pdf":
+                  return <Tag color="red">pdf</Tag>;
+               case "xlsx":
+                  return <Tag color="green">xls</Tag>;
+            }
+         },
+      },
+      {
+         title: "Status",
+         dataIndex: "status",
+         key: "status",
+      },
+      {
+         title: "Created at",
+         dataIndex: "created_at",
+         key: "created_at",
+         render: (text) => <>{formatDate(text)}</>,
+      },
+      {
+         title: "Action",
+         key: "action",
+         render: (_, element) => {
+            return (
+               <Space>
+                  <DeleteFileButton deleteFile={deleteFile} element={element} />
+                  <DownloadButton
+                     tooltip="Download file"
+                     downloadFile={downloadFile}
+                     element={element}
+                     endpoint="download_admin_base"
+                  >
+                     <FaDownload />
+                  </DownloadButton>
+                  <DownloadButton
+                     tooltip="Download txt file"
+                     downloadFile={downloadFile}
+                     element={element}
+                     endpoint="download_admin_txt"
+                  >
+                     <BsFiletypeTxt />
+                  </DownloadButton>
+               </Space>
+            );
+         },
+      },
+   ];
 
    return (
       <Flex gap="middle" vertical>
-         <Flex align="center" gap="middle">
-            {hasSelected ? `Selected ${selectedRowKeys.length} items` : null}
+         <Typography.Title level={3}>File management</Typography.Title>
+         <Flex gap="middle">
+            <SearchFile setSearch={setSearchValue} />
+            {(() => {
+               const status = getSelectedVerificationStatus();
+               if (status === "verified") {
+                  return (
+                     <VerifyButton
+                        verifyFiles={verifyFiles}
+                        selectedRowKeys={selectedRowKeys}
+                        setSelectedRowKeys={setSelectedRowKeys}
+                        endpoint="false"
+                     >
+                        Cancel verification
+                     </VerifyButton>
+                  );
+               }
+               if (status === "unverified") {
+                  return (
+                     <VerifyButton
+                        verifyFiles={verifyFiles}
+                        selectedRowKeys={selectedRowKeys}
+                        setSelectedRowKeys={setSelectedRowKeys}
+                        endpoint="true"
+                     >
+                        Make verification
+                     </VerifyButton>
+                  );
+               }
+               return null;
+            })()}
          </Flex>
-         <Table<DataType>
+
+         <TableComponent<DataType>
             rowSelection={rowSelection}
             columns={columns}
-            dataSource={keyData}
+            data={keyData}
             pagination={{
-               pageSize: 10,
+               onChange: (current) => setCurrentPage(current),
+               showSizeChanger: false,
+               current: currentPage,
+               total: data?.count,
             }}
             className={styles.customTable}
-            scroll={{ y: 80 * 5 }}
-            rowClassName={(record) => (!record.verified ? "row-unverified" : "")}
+            rowClassName={(record) =>
+               !record.is_verified ? "row-unverified" : "row-verified"
+            }
+            isLoading={isLoading || searchLoading}
          />
       </Flex>
    );

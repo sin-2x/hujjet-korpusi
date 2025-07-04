@@ -20,21 +20,22 @@ export const MainLayout: React.FC = () => {
       <div>
          <Header
             style={{
-               padding: 0,
+               display:"flex",
+               padding: "10px",
                background: colorBgContainer,
                position: "sticky",
                top: 0,
-               zIndex: 1,
+               zIndex: 99,
             }}
          >
             <Button
-               type="text"
+               type="primary"
                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                onClick={() => setCollapsed(!collapsed)}
                style={{
                   fontSize: "16px",
-                  width: 64,
-                  height: 64,
+                  width: 50,
+                  height: 50,
                }}
             />
          </Header>
@@ -60,9 +61,9 @@ export const MainLayout: React.FC = () => {
                      display: "flex",
                      flexDirection: "column",
                      alignItems: "center",
-                     justifyContent: "center",
                      height: "100%",
                      gap: "10px",
+                     fontSize: "16px",
                   }}
                   items={[
                      {

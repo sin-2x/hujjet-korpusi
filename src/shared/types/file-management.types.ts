@@ -15,5 +15,5 @@ export type File = {
    file_type: string;
    status: string;
    title: string;
-   verified: boolean;
+   is_verified: boolean;
 };

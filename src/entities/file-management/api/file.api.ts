@@ -1,23 +1,54 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fileServices } from "./file.services";
-import type { MessageInstance } from "antd/es/message/interface";
+import type React from "react";
+import type { DownloadEndpoint } from "@/shared";
 
 export const fileApi = {
-   useGetAllFilesQuery: () => {
+   useGetAllFilesQuery: (page: number) => {
       return useQuery({
-         queryKey: ["files"],
-         queryFn: fileServices.getAllFiles,
+         queryKey: ["files", page],
+         queryFn: () => fileServices.getAllFiles(page),
       });
    },
    useVerifyFilesMutation: () => {
+      const queryClient = useQueryClient();
+
       return useMutation({
-         mutationFn: fileServices.verifyFiles,
-         onSuccess: (messageApi: MessageInstance) => {
-            messageApi.success("Файлы успешно проверены");
+         mutationFn: async (variables: {
+            id: string[] | React.Key[];
+            endpoint: "true" | "false";
+         }) => {
+            for (const id of variables.id) {
+               await fileServices.verifyFiles(id, variables.endpoint);
+            }
          },
-         onError: (messageApi: MessageInstance) => {
-            messageApi.error("Произошла ошибка при проверке файлов");
+         onSuccess: () => {
+            queryClient.invalidateQueries({
+               queryKey: ["files"],
+               exact: false,
+            });
          },
+         onError: () => {},
+      });
+   },
+   useDownloadFileMutation: () => {
+      return useMutation({
+         mutationFn: (variables: {
+            id: string | React.Key;
+            endpoint: DownloadEndpoint;
+         }) => fileServices.downloadFile(variables.id, variables.endpoint),
+      });
+   },
+   useDeleteFileMutation: () => {
+      return useMutation({
+         mutationFn: (id: string | React.Key) => fileServices.deleteFile(id),
+      });
+   },
+   useGetSearchFilesQuery: (args: string) => {
+      return useQuery({
+         queryKey: ["search-files"],
+         queryFn: () => fileServices.getSearchFiles(args),
+         enabled: !!args.length,
       });
    },
 };

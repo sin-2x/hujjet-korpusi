@@ -1,5 +1,4 @@
-
-export type User = {
+export type UserT = {
    name: string;
    surname: string;
    username: string;
@@ -35,3 +34,5 @@ export enum RouteNames {
    UserControl = "/userControl",
    FileManagement = "/fileManagement",
 }
+
+export type DownloadEndpoint = "download_admin_base" | "download_admin_txt";
