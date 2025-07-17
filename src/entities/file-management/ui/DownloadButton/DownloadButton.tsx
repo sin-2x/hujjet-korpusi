@@ -1,5 +1,5 @@
-import type { DownloadEndpoint, File } from "@/shared";
-import { Button, Tooltip } from "antd";
+import { AdminFileControl, type DownloadEndpoint, type File } from "@/shared";
+import { App, Button, Tooltip } from "antd";
 import React, { type PropsWithChildren } from "react";
 
 interface IProps {
@@ -15,6 +15,7 @@ export const DownloadButton: React.FC<PropsWithChildren<IProps>> = ({
    children,
    tooltip,
 }) => {
+   const { message } = App.useApp();
    return (
       <Tooltip title={tooltip}>
          <Button
@@ -31,7 +32,8 @@ export const DownloadButton: React.FC<PropsWithChildren<IProps>> = ({
                         const url = window.URL.createObjectURL(
                            new Blob([res.blob], {
                               type:
-                                 endpoint === "download_admin_base"
+                                 endpoint ===
+                                 AdminFileControl.DOWNLOAD_ORIGINAL_FILE
                                     ? res.blob.type
                                     : "text/plain",
                            })
@@ -42,8 +44,11 @@ export const DownloadButton: React.FC<PropsWithChildren<IProps>> = ({
                         document.body.appendChild(link);
                         link.click();
                         link.remove();
+                        message.success("File downloaded successfully");
                      },
-                     onError: () => {},
+                     onError: () => {
+                        message.error("Error downloading file");
+                     },
                   }
                );
             }}

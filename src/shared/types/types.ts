@@ -1,3 +1,5 @@
+import type { AdminFileControl } from "../utils";
+
 export type UserT = {
    name: string;
    surname: string;
@@ -35,4 +37,6 @@ export enum RouteNames {
    FileManagement = "/fileManagement",
 }
 
-export type DownloadEndpoint = "download_admin_base" | "download_admin_txt";
+export type DownloadEndpoint =
+   | AdminFileControl.DOWNLOAD_ORIGINAL_FILE
+   | AdminFileControl.DOWNLOAD_TXT_FILE;

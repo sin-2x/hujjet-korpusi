@@ -40,8 +40,15 @@ export const fileApi = {
       });
    },
    useDeleteFileMutation: () => {
+      const queryClient = useQueryClient();
       return useMutation({
          mutationFn: (id: string | React.Key) => fileServices.deleteFile(id),
+         onSuccess: () => {
+            queryClient.invalidateQueries({
+               queryKey: ["files"],
+               exact: false,
+            });
+         },
       });
    },
    useGetSearchFilesQuery: (args: string) => {

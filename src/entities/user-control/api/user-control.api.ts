@@ -1,10 +1,16 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userControlServices, type TUserUpdate } from "./user-control.services";
+import type { User } from "@/shared";
 
 export const userControlApi = {
    useCreateUser: () => {
+      const queryClient = useQueryClient();
       return useMutation({
-         mutationFn: () => userControlServices.createUser(),
+         mutationFn: (data: Omit<User, "id">) =>
+            userControlServices.createUser(data),
+         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+         },
       });
    },
    useGetAllUsers: (page: number) => {
@@ -17,6 +23,7 @@ export const userControlApi = {
       return useQuery({
          queryFn: () => userControlServices.searchUsers(args),
          queryKey: ["search-users", args],
+         enabled: !!args.length,
       });
    },
    useDeleteUser: () => {
@@ -26,9 +33,13 @@ export const userControlApi = {
       });
    },
    useUpdateUser: () => {
+      const queryClient = useQueryClient()
       return useMutation({
-         mutationFn: (body: TUserUpdate) =>
-            userControlServices.updateUser(body),
+         mutationFn: ({ id, body }: { body: TUserUpdate; id: string|number }) =>
+            userControlServices.updateUser(id, body),
+         onSuccess: ( ) => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+         }
       });
    },
 };

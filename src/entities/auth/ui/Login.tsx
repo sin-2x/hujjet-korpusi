@@ -5,7 +5,7 @@ import { useRouter } from "@tanstack/react-router";
 import { authApi } from "@/entities/auth/api";
 import { useAuthStore } from "@/entities";
 import { useForm } from "antd/es/form/Form";
-import type { LoginValueType } from "@/shared";
+import { RouteNames, type LoginValueType } from "@/shared";
 
 export const Login: React.FC = () => {
    const { message } = App.useApp();
@@ -30,7 +30,7 @@ export const Login: React.FC = () => {
          setToken(data.token);
          setIsAuth(true);
          form.resetFields();
-         navigate({ to: "/statistics" });
+         navigate({ to: RouteNames.Home as string });
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [data, isSuccess, setIsAuth, setToken, login]);
@@ -87,10 +87,9 @@ export const Login: React.FC = () => {
                   }}
                   loading={isPending}
                >
-                  Submit
+                  LOGIN
                </Button>
             </Form.Item>
-
          </Form>
       </Space>
    );

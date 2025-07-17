@@ -10,17 +10,21 @@ export const userControlServices = {
       return res.data;
    },
    searchUsers: async (args: string): Promise<Users> => {
-      const res = await $api.get("/admin/search_users/", {
+      const res = await $api.get("/admin/search_user/", {
          params: { args },
       });
       return res.data;
    },
-   createUser: async (): Promise<TCreateUserRes> => {
-      const res = await $api.post("/admin/create_user/");
+   createUser: async (data: Omit<User, "id">): Promise<TCreateUserRes> => {
+      const res = await $api.post("/admin/create_user/", data);
       return res.data;
    },
-   updateUser: async (body: TUserUpdate): Promise<{ message: string }> => {
-      const res = await $api.put(`/admin/change_user/${body.username}`, body);
+   updateUser: async (
+      id: string | number,
+      body: TUserUpdate
+   ): Promise<{ message: string }> => {
+      console.log(body);
+      const res = await $api.put(`/admin/change_user/${id}`, body);
       return res.data;
    },
    deleteUser: async (username: string) => {

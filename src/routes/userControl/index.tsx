@@ -6,4 +6,3 @@ export const Route = createFileRoute("/userControl/")({
    component: UserControl,
    beforeLoad: authGuard,
 });
-

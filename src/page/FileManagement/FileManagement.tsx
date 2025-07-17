@@ -3,13 +3,15 @@ import React, { useState } from "react";
 import { Flex, Space, Tag } from "antd";
 import { Typography, type TableProps } from "antd";
 import {
-   DeleteFileButton,
+   DeleteButton,
    DownloadButton,
    fileApi,
    SearchFile,
+   useDeleteUserMutation,
    VerifyButton,
 } from "@/entities";
 import {
+   AdminFileControl,
    dataWithKey,
    formatDate,
    TableComponent,
@@ -37,7 +39,10 @@ export const FileManagement: React.FC = () => {
    const { data, isLoading } = fileApi.useGetAllFilesQuery(currentPage);
    const { mutate: verifyFiles } = fileApi.useVerifyFilesMutation();
    const { mutate: downloadFile } = fileApi.useDownloadFileMutation();
-   const { mutate: deleteFile } = fileApi.useDeleteFileMutation();
+   const { mutate: deleteFile } = useDeleteUserMutation(
+      AdminFileControl.DELETE_FILE,
+      "files"
+   );
    const { data: searchData, isLoading: searchLoading } =
       fileApi.useGetSearchFilesQuery(debouncedSearchValue);
 
@@ -50,14 +55,17 @@ export const FileManagement: React.FC = () => {
       onChange: onSelectChange,
    };
 
-   const keyData = dataWithKey(
-      {
-         data: data?.results,
-         searchData: searchData?.results,
-      },
-      searchValue,
-      "uuid"
-   );
+   const keyData = React.useMemo(() => {
+      return dataWithKey(
+         {
+            data: data?.results,
+            searchData: searchData?.results,
+         },
+         searchValue,
+         "uuid"
+      );
+   }, [data?.results, searchData?.results, searchValue]);
+
    const getSelectedVerificationStatus = ():
       | "verified"
       | "unverified"
@@ -128,12 +136,17 @@ export const FileManagement: React.FC = () => {
          render: (_, element) => {
             return (
                <Space>
-                  <DeleteFileButton deleteFile={deleteFile} element={element} />
+                  <DeleteButton
+                     deleteFn={deleteFile}
+                     uuid={element.uuid}
+                     title="Delete file"
+                     description="Are you sure you want to delete this file?"
+                  />
                   <DownloadButton
                      tooltip="Download file"
                      downloadFile={downloadFile}
                      element={element}
-                     endpoint="download_admin_base"
+                     endpoint={AdminFileControl.DOWNLOAD_ORIGINAL_FILE}
                   >
                      <FaDownload />
                   </DownloadButton>
@@ -141,7 +154,7 @@ export const FileManagement: React.FC = () => {
                      tooltip="Download txt file"
                      downloadFile={downloadFile}
                      element={element}
-                     endpoint="download_admin_txt"
+                     endpoint={AdminFileControl.DOWNLOAD_TXT_FILE}
                   >
                      <BsFiletypeTxt />
                   </DownloadButton>

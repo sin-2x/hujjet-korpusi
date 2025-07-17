@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authServices } from "./auth.services";
 import type { MessageInstance } from "antd/es/message/interface";
 
@@ -16,13 +16,6 @@ export const authApi = {
          },
       });
       return mutation;
-   },
-   useGetMe: () => {
-      const query = useQuery({
-         queryFn: authServices.getMe,
-         queryKey: ["me"],
-      });
-      return query;
    },
    useLogout: () => {
       return useMutation({

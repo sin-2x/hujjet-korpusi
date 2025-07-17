@@ -8,11 +8,11 @@ import { App as AntdApp } from "antd";
 //c
 
 createRoot(document.getElementById("root")!).render(
-   <AndProvider>
-      <AntdApp>
+   <AntdApp>
+      <AndProvider>
          <QueryClientProvider client={client}>
             <App />
          </QueryClientProvider>
-      </AntdApp>
-   </AndProvider>
+      </AndProvider>
+   </AntdApp>
 );
