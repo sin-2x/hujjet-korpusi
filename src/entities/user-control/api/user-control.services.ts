@@ -23,7 +23,6 @@ export const userControlServices = {
       id: string | number,
       body: TUserUpdate
    ): Promise<{ message: string }> => {
-      console.log(body);
       const res = await $api.put(`/admin/change_user/${id}`, body);
       return res.data;
    },

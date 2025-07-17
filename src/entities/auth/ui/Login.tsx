@@ -21,7 +21,6 @@ export const Login: React.FC = () => {
    const { navigate } = useRouter();
 
    const onFinish: FormProps<LoginValueType>["onFinish"] = (values) => {
-      console.log("Success:", values);
       login(values);
    };
 

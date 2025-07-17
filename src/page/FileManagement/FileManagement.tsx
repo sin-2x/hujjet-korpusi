@@ -6,7 +6,7 @@ import {
    DeleteButton,
    DownloadButton,
    fileApi,
-   SearchFile,
+   searchStore,
    useDeleteUserMutation,
    VerifyButton,
 } from "@/entities";
@@ -15,11 +15,11 @@ import {
    dataWithKey,
    formatDate,
    TableComponent,
-   useDebounce,
    useStyle,
    type File,
 } from "@/shared";
 import { FaDownload } from "react-icons/fa";
+import { SearchInput } from "@/features";
 
 type TableRowSelection<T extends object = object> =
    TableProps<T>["rowSelection"];
@@ -33,8 +33,8 @@ export const FileManagement: React.FC = () => {
 
    const [currentPage, setCurrentPage] = useState(1);
    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-   const [searchValue, setSearchValue] = useState("");
-   const debouncedSearchValue = useDebounce(searchValue, 500);
+
+   const searchValue = searchStore((state) => state.searchValue);
 
    const { data, isLoading } = fileApi.useGetAllFilesQuery(currentPage);
    const { mutate: verifyFiles } = fileApi.useVerifyFilesMutation();
@@ -44,7 +44,7 @@ export const FileManagement: React.FC = () => {
       "files"
    );
    const { data: searchData, isLoading: searchLoading } =
-      fileApi.useGetSearchFilesQuery(debouncedSearchValue);
+      fileApi.useGetSearchFilesQuery(searchValue);
 
    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
       setSelectedRowKeys(newSelectedRowKeys);
@@ -59,7 +59,7 @@ export const FileManagement: React.FC = () => {
       return dataWithKey(
          {
             data: data?.results,
-            searchData: searchData?.results,
+            searchData: searchData?.results || [],
          },
          searchValue,
          "uuid"
@@ -168,7 +168,7 @@ export const FileManagement: React.FC = () => {
       <Flex gap="middle" vertical>
          <Typography.Title level={3}>File management</Typography.Title>
          <Flex gap="middle">
-            <SearchFile setSearch={setSearchValue} />
+            <SearchInput />
             {(() => {
                const status = getSelectedVerificationStatus();
                if (status === "verified") {

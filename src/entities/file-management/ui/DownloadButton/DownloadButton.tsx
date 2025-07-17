@@ -28,7 +28,6 @@ export const DownloadButton: React.FC<PropsWithChildren<IProps>> = ({
                   },
                   {
                      onSuccess: (res: any) => {
-                        console.log(res);
                         const url = window.URL.createObjectURL(
                            new Blob([res.blob], {
                               type:

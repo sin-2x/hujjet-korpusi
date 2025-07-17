@@ -28,7 +28,6 @@ $api.interceptors.request.use((config) => {
 //             authStore.setToken(newToken);
 //             return $api.request(originalRequest);
 //          } catch (e) {
-//             console.log("НЕ АВТОРИЗОВАН", e);
 //             const authStore = useAuthStore.getState();
 //             authStore.setIsAuth(false);
 //             authStore.setToken(null);

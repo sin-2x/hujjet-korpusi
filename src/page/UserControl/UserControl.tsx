@@ -33,11 +33,11 @@ export const UserControl: React.FC = () => {
       data: { [key: string]: string };
    }>({ id: null, data: {} });
 
-   const searhValue = searchStore((state) => state.searchValue);
+   const searchValue = searchStore((state) => state.searchValue);
 
    const { data, isLoading } = userControlApi.useGetAllUsers(currentPage);
    const { data: searchData, isLoading: searchLoading } =
-      userControlApi.useSearchUsers(searhValue);
+      userControlApi.useSearchUsers(searchValue);
    const { mutate: deleteUser } = useDeleteUserMutation(
       AdminUserControl.DELETE_USER,
       "users"
@@ -46,7 +46,6 @@ export const UserControl: React.FC = () => {
    const { mutate: updateUser } = userControlApi.useUpdateUser();
 
    const updateFn = (id: string | number) => {
-      console.log(editing);
       updateUser({ id, body: editing.data });
       setEditing({ id: null, data: {} });
    };
@@ -57,10 +56,10 @@ export const UserControl: React.FC = () => {
             data: data?.results,
             searchData: searchData?.results || [],
          },
-         searhValue,
+         searchValue,
          "username"
       );
-   }, [data?.results, searchData?.results, searhValue]);
+   }, [data?.results, searchData?.results, searchValue]);
 
    const columns: TableProps<DataType>["columns"] = [
       {
@@ -139,12 +138,14 @@ export const UserControl: React.FC = () => {
                      <Button
                         type="primary"
                         onClick={() => updateFn(element.id)}
+                        
                      >
                         <AiFillCheckCircle />
                      </Button>
                      <Button
                         type="primary"
                         onClick={() => setEditing({ id: null, data: {} })}
+                        danger
                      >
                         <AiFillCloseCircle />
                      </Button>

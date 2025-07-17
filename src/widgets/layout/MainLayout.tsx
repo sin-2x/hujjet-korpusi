@@ -17,6 +17,7 @@ export const MainLayout: React.FC = () => {
    const { navigate } = useRouter();
    const { pathname } = useLocation();
    const { mutate: logout } = authApi.useLogout();
+   
 
    const logoutFn = () => {
       localStorage.removeItem("auth");
@@ -32,25 +33,25 @@ export const MainLayout: React.FC = () => {
       {
          key: RouteNames.Home,
          icon: <AiOutlineHome />,
-         label: "Главная страница",
+         label: "Home",
          onClick: () => navigate({ to: RouteNames.Home as string }),
       },
       {
          key: RouteNames.FileManagement,
          icon: <ImFilesEmpty />,
-         label: "Файлы",
+         label: "File Management",
          onClick: () => navigate({ to: RouteNames.FileManagement as string }),
       },
       {
          key: RouteNames.UserControl,
          icon: <FaUsersCog />,
-         label: "Пользователи",
+         label: "User Control",
          onClick: () => navigate({ to: RouteNames.UserControl as string }),
       },
       {
          key: RouteNames.Statistics,
          icon: <AiOutlineBarChart />,
-         label: "Статистика",
+         label: "Statistics",
          onClick: () => navigate({ to: RouteNames.Statistics as string }),
       },
       {
@@ -58,8 +59,14 @@ export const MainLayout: React.FC = () => {
          icon: <AiOutlineLogout />,
          label: "Logout",
          onClick: () => logoutFn(),
+         authOnly: true,
       },
    ];
+
+   const menuConfig = items.filter((item) => {
+      if (item.authOnly && !localStorage.getItem("auth")) return false;
+      return true;
+   });
 
    return (
       <div>
@@ -110,7 +117,7 @@ export const MainLayout: React.FC = () => {
                      gap: "10px",
                      fontSize: "16px",
                   }}
-                  items={items}
+                  items={menuConfig}
                />
             </Sider>
             <Layout>

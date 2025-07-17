@@ -53,7 +53,7 @@ export const fileApi = {
    },
    useGetSearchFilesQuery: (args: string) => {
       return useQuery({
-         queryKey: ["search-files"],
+         queryKey: ["search-files", args],
          queryFn: () => fileServices.getSearchFiles(args),
          enabled: !!args.length,
       });
