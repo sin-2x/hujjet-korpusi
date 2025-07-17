@@ -17,7 +17,7 @@ export const MainLayout: React.FC = () => {
    const { navigate } = useRouter();
    const { pathname } = useLocation();
    const { mutate: logout } = authApi.useLogout();
-   
+
 
    const logoutFn = () => {
       localStorage.removeItem("auth");
@@ -108,6 +108,7 @@ export const MainLayout: React.FC = () => {
                <Menu
                   theme="light"
                   mode="inline"
+                  selectedKeys={[pathname]}
                   defaultSelectedKeys={[pathname]}
                   style={{
                      display: "flex",
