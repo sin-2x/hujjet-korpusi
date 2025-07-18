@@ -1,11 +1,11 @@
-import { BsFiletypeTxt } from "react-icons/bs";
 import React, { useState } from "react";
-import { Flex, Space, Tag } from "antd";
-import { Typography, type TableProps } from "antd";
+import { Button, Flex, Tag } from "antd";
+import { type TableProps } from "antd";
 import {
    DeleteButton,
    DownloadButton,
    fileApi,
+   JsonViewButton,
    searchStore,
    useDeleteUserMutation,
    VerifyButton,
@@ -15,11 +15,14 @@ import {
    dataWithKey,
    formatDate,
    TableComponent,
+   TitlePage,
    useStyle,
    type File,
+   type JsonViewData,
 } from "@/shared";
 import { FaDownload } from "react-icons/fa";
 import { SearchInput } from "@/features";
+import { BsFiletypeTxt } from "react-icons/bs";
 
 type TableRowSelection<T extends object = object> =
    TableProps<T>["rowSelection"];
@@ -45,6 +48,20 @@ export const FileManagement: React.FC = () => {
    );
    const { data: searchData, isLoading: searchLoading } =
       fileApi.useGetSearchFilesQuery(searchValue);
+   const { mutate: downloadMergedFn } = fileApi.useDownloadMergedFilesQuery();
+   const {
+      mutate: downloadJsonFn,
+      data: jsonData,
+      isPending: jsonLoading,
+   } = fileApi.useDownloadJsonFileQuery();
+
+   const handleDownloadMerged = () => {
+      downloadMergedFn();
+   };
+
+   const handleViewJson = React.useCallback((uuid: string) => {
+      downloadJsonFn(uuid);
+   }, []);
 
    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
       setSelectedRowKeys(newSelectedRowKeys);
@@ -90,17 +107,36 @@ export const FileManagement: React.FC = () => {
          dataIndex: "title",
          key: "name",
          render: (text) => <>{text}</>,
-      },
-      {
-         title: "Content",
-         dataIndex: "content",
-         key: "content",
+         fixed: "left",
+         width: 200,
       },
       {
          title: "File size",
          dataIndex: "file_size",
          key: "file_size",
          render: (text) => <>{text}b</>,
+         width: 150,
+      },
+      {
+         title: " Sign count",
+         dataIndex: "token_count",
+         key: "token_count",
+         render: (text) => <>{text}</>,
+         width: 150,
+      },
+      {
+         title: " Vocab count",
+         dataIndex: "vocab_count",
+         key: "vocab_count",
+         render: (text) => <>{text}</>,
+         width: 150,
+      },
+      {
+         title: "Sentence count",
+         dataIndex: "sentence_count",
+         key: "sentence_count",
+         render: (text) => <>{text}</>,
+         width: 150,
       },
       {
          title: "File type",
@@ -118,24 +154,29 @@ export const FileManagement: React.FC = () => {
                   return <Tag color="green">xls</Tag>;
             }
          },
+         width: 150,
       },
       {
-         title: "Status",
-         dataIndex: "status",
-         key: "status",
+         title: "Description",
+         dataIndex: "description",
+         key: "description",
+         render: (text) => <>{text}</>,
+         width: 150,
       },
       {
          title: "Created at",
          dataIndex: "created_at",
          key: "created_at",
          render: (text) => <>{formatDate(text)}</>,
+         width: 150,
       },
       {
          title: "Action",
          key: "action",
+         fixed: "right",
          render: (_, element) => {
             return (
-               <Space>
+               <div className="flex ">
                   <DeleteButton
                      deleteFn={deleteFile}
                      uuid={element.uuid}
@@ -158,7 +199,13 @@ export const FileManagement: React.FC = () => {
                   >
                      <BsFiletypeTxt />
                   </DownloadButton>
-               </Space>
+                  <JsonViewButton
+                     downloadJsonFn={() => handleViewJson(element.uuid)}
+                     uuid={element.uuid}
+                     data={jsonData as JsonViewData}
+                     isLoading={jsonLoading}
+                  />
+               </div>
             );
          },
       },
@@ -166,38 +213,43 @@ export const FileManagement: React.FC = () => {
 
    return (
       <Flex gap="middle" vertical>
-         <Typography.Title level={3}>File management</Typography.Title>
-         <Flex gap="middle">
+         <TitlePage title={"File management"}>
             <SearchInput />
-            {(() => {
-               const status = getSelectedVerificationStatus();
-               if (status === "verified") {
-                  return (
-                     <VerifyButton
-                        verifyFiles={verifyFiles}
-                        selectedRowKeys={selectedRowKeys}
-                        setSelectedRowKeys={setSelectedRowKeys}
-                        endpoint="false"
-                     >
-                        Cancel verification
-                     </VerifyButton>
-                  );
-               }
-               if (status === "unverified") {
-                  return (
-                     <VerifyButton
-                        verifyFiles={verifyFiles}
-                        selectedRowKeys={selectedRowKeys}
-                        setSelectedRowKeys={setSelectedRowKeys}
-                        endpoint="true"
-                     >
-                        Make verification
-                     </VerifyButton>
-                  );
-               }
-               return null;
-            })()}
-         </Flex>
+            <Button onClick={handleDownloadMerged} type="primary" size="large">
+               Download merged files
+               <BsFiletypeTxt />
+            </Button>
+            <Flex gap="middle">
+               {(() => {
+                  const status = getSelectedVerificationStatus();
+                  if (status === "verified") {
+                     return (
+                        <VerifyButton
+                           verifyFiles={verifyFiles}
+                           selectedRowKeys={selectedRowKeys}
+                           setSelectedRowKeys={setSelectedRowKeys}
+                           endpoint="false"
+                        >
+                           Cancel verification
+                        </VerifyButton>
+                     );
+                  }
+                  if (status === "unverified") {
+                     return (
+                        <VerifyButton
+                           verifyFiles={verifyFiles}
+                           selectedRowKeys={selectedRowKeys}
+                           setSelectedRowKeys={setSelectedRowKeys}
+                           endpoint="true"
+                        >
+                           Make verification
+                        </VerifyButton>
+                     );
+                  }
+                  return null;
+               })()}
+            </Flex>
+         </TitlePage>
 
          <TableComponent<DataType>
             rowSelection={rowSelection}

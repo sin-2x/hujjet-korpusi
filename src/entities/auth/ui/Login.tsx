@@ -14,14 +14,21 @@ export const Login: React.FC = () => {
       isPending,
       data,
       isSuccess,
-   } = authApi.useLoginMutation(message);
+   } = authApi.useLoginMutation();
 
    const { setIsAuth, setToken } = useAuthStore();
    const [form] = useForm();
    const { navigate } = useRouter();
 
    const onFinish: FormProps<LoginValueType>["onFinish"] = (values) => {
-      login(values);
+      login(values, {
+         onSuccess: () => {
+            message.success("You have successfully logged in!");
+         },
+         onError: () => {
+            message.error("Phone number or password is incorrect!");
+         },
+      });
    };
 
    React.useEffect(() => {

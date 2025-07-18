@@ -16,6 +16,8 @@ export enum AdminFileControl {
    DELETE_FILE = "admin/delete_file/",
    DOWNLOAD_ORIGINAL_FILE = "admin/download_admin_base/",
    DOWNLOAD_TXT_FILE = "admin/download_admin_txt/",
+   DOWNLOAD_MERGED_TXT = "admin/download_merged_txt/",
+   DOWNLOAD_JSON_TXT_FILE = "admin/text/",
 }
 export enum AdminStatistics {
    GET_STATISTICS = "admin/statistika/",

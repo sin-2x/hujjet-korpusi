@@ -28,9 +28,7 @@ export const VerifyButton: React.FC<PropsWithChildren<IProps>> = ({
    return (
       <Button
          type="primary"
-         style={{
-            padding: "20px",
-         }}
+         size="large"
          onClick={async () => {
             await verifyFiles(
                { id: selectedRowKeys, endpoint },

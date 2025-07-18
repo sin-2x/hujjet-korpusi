@@ -21,7 +21,6 @@ export const TableComponent = <T extends { key: React.Key }>({
    rowClassName,
    className,
 }: TableComponentProps<T>) => {
-    
    return (
       <Table<T>
          rowSelection={rowSelection}
@@ -29,7 +28,7 @@ export const TableComponent = <T extends { key: React.Key }>({
          dataSource={data}
          pagination={pagination}
          className={className}
-         scroll={{ y: 90 * 5 }}
+         scroll={{ x: "max-content", y: 85 * 5 }}
          rowClassName={rowClassName}
          loading={isLoading}
       />

@@ -1,3 +1,3 @@
 export { VerifyButton } from "./VerifyButton";
-export { DownloadButton } from "./DownloadButton";
+export * from "./DownloadButton";
 export { SearchFile } from "./SearchFiles";

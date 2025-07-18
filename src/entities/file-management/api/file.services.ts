@@ -3,13 +3,13 @@ import {
    AdminFileControl,
    getFilenameFromHeaders,
    type DownloadEndpoint,
-   type File,
    type Files,
+   type JsonViewData,
 } from "@/shared";
 import type React from "react";
 
 export const fileServices = {
-   getAllFiles: async (page: number): Promise<Files<File>> => {
+   getAllFiles: async (page: number): Promise<Files> => {
       const response = await $api.get(AdminFileControl.GET_FILES, {
          params: { page },
       });
@@ -36,10 +36,25 @@ export const fileServices = {
       );
       return response.data;
    },
-   getSearchFiles: async (args: string): Promise<Files<File>> => {
+   getSearchFiles: async (args: string): Promise<Files> => {
       const response = await $api.get(AdminFileControl.GET_SEARCH_FILES, {
          params: { args },
       });
+      return response.data;
+   },
+   downloadMergedTxt: async () => {
+      const response = await $api.get(AdminFileControl.DOWNLOAD_MERGED_TXT, {
+         responseType: "blob",
+      });
+      return {
+         blob: response.data,
+         filename: getFilenameFromHeaders(response.headers),
+      };
+   },
+   downloadJsonFile: async (id: string): Promise<JsonViewData> => {
+      const response = await $api.get(
+         `${AdminFileControl.DOWNLOAD_JSON_TXT_FILE}${id}/`
+      );
       return response.data;
    },
 };

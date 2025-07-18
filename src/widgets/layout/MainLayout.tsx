@@ -18,7 +18,6 @@ export const MainLayout: React.FC = () => {
    const { pathname } = useLocation();
    const { mutate: logout } = authApi.useLogout();
 
-
    const logoutFn = () => {
       localStorage.removeItem("auth");
       logout();
@@ -59,12 +58,11 @@ export const MainLayout: React.FC = () => {
          icon: <AiOutlineLogout />,
          label: "Logout",
          onClick: () => logoutFn(),
-         authOnly: true,
       },
    ];
 
    const menuConfig = items.filter((item) => {
-      if (item.authOnly && !localStorage.getItem("auth")) return false;
+      if (item.key === "logout" && !localStorage.getItem("auth")) return false;
       return true;
    });
 
