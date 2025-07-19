@@ -1,8 +1,8 @@
+import { AiFillEye } from "react-icons/ai"; 
 import type { JsonViewData } from "@/shared";
 import type { UseMutateFunction } from "@tanstack/react-query";
 import { Button, Modal, Tooltip } from "antd";
 import React from "react";
-import { BsFiletypeJson } from "react-icons/bs";
 
 interface IProps {
    downloadJsonFn: UseMutateFunction<any, Error, string, unknown>;
@@ -29,7 +29,7 @@ export const JsonViewButton: React.FC<IProps> = React.memo(
                   }}
                   type="link"
                >
-                  <BsFiletypeJson />
+                 <AiFillEye />
                </Button>
             </Tooltip>
             <Modal

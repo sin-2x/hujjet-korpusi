@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Flex, Tag } from "antd";
+import { App, Button, Flex, Tag } from "antd";
 import { type TableProps } from "antd";
 import {
    DeleteButton,
@@ -34,6 +34,8 @@ interface DataType extends File {
 export const FileManagement: React.FC = () => {
    const { styles } = useStyle();
 
+   const { message } = App.useApp();
+
    const [currentPage, setCurrentPage] = useState(1);
    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -56,7 +58,14 @@ export const FileManagement: React.FC = () => {
    } = fileApi.useDownloadJsonFileQuery();
 
    const handleDownloadMerged = () => {
-      downloadMergedFn();
+      downloadMergedFn(undefined, {
+         onSuccess: () => {
+            message.success("Downloaded successfully");
+         },
+         onError: () => {
+            message.error("Error downloading file");
+         },
+      });
    };
 
    const handleViewJson = React.useCallback((uuid: string) => {
