@@ -4,14 +4,14 @@ export enum AdminAuthEndpoints {
 }
 export enum AdminUserControl {
    GET_USERS = "admin/users/",
-   SEARCH_USERS = "admin/search_users/",
+   SEARCH_USERS = "admin/search_user/",
    DELETE_USER = "admin/delete_user/",
    CREATE_NEW_USER = "admin/create_user/",
    UPDATE_USER = "admin/change_user/",
 }
 export enum AdminFileControl {
    GET_FILES = "admin/files/",
-   GET_SEARCH_FILES = "admin/search_file/",
+   GET_SEARCH_FILES = "admin/search_files/",
    VERIFY_FILE = "admin/verify/",
    DELETE_FILE = "admin/delete_file/",
    DOWNLOAD_ORIGINAL_FILE = "admin/download_admin_base/",
