@@ -22,6 +22,9 @@ export const Login: React.FC = () => {
 
    const onFinish: FormProps<LoginValueType>["onFinish"] = (values) => {
       login(values, {
+         onSuccess: () => {
+            message.success("You have successfully logged in!");
+         },
          onError: () => {
             message.error("Phone number or password is incorrect!");
          },
@@ -29,14 +32,7 @@ export const Login: React.FC = () => {
    };
 
    React.useEffect(() => {
-      if (data?.detail === "faqat admin kira oladi") {
-         message.error(data.detail);
-         return;
-      }
-
       if (isSuccess) {
-         message.success("You have successfully logged in!");
-
          setToken(data.token);
          setIsAuth(true);
          form.resetFields();
