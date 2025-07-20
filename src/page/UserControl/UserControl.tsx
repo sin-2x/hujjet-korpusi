@@ -17,7 +17,7 @@ import {
    useStyle,
    type User,
 } from "@/shared";
-import { Button, Input, Space, type TableProps } from "antd";
+import { Button, Input, Space, Tooltip, type TableProps } from "antd";
 import React from "react";
 
 interface DataType extends User {
@@ -122,6 +122,14 @@ export const UserControl: React.FC = () => {
                element.username
             ),
       },
+
+      {
+         title: "Role",
+         dataIndex: "is_admin",
+         key: "role",
+         render: (_, element) => (element.is_admin ? "Admin" : "User"),
+      },
+
       {
          title: "Action",
          key: "action",
@@ -138,7 +146,6 @@ export const UserControl: React.FC = () => {
                      <Button
                         type="primary"
                         onClick={() => updateFn(element.id)}
-                        
                      >
                         <AiFillCheckCircle />
                      </Button>
@@ -151,21 +158,23 @@ export const UserControl: React.FC = () => {
                      </Button>
                   </>
                ) : (
-                  <Button
-                     type="primary"
-                     onClick={() =>
-                        setEditing({
-                           id: element.username,
-                           data: {
-                              username: element.username,
-                              first_name: element.first_name,
-                              last_name: element.last_name,
-                           },
-                        })
-                     }
-                  >
-                     <FaUserEdit />
-                  </Button>
+                  <Tooltip title="Edit">
+                     <Button
+                        type="primary"
+                        onClick={() =>
+                           setEditing({
+                              id: element.username,
+                              data: {
+                                 username: element.username,
+                                 first_name: element.first_name,
+                                 last_name: element.last_name,
+                              },
+                           })
+                        }
+                     >
+                        <FaUserEdit />
+                     </Button>
+                  </Tooltip>
                )}
             </Space>
          ),

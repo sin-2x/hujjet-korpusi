@@ -1,5 +1,13 @@
 import { AiOutlineUserAdd } from "react-icons/ai";
-import { App, Button, Form, Input, Modal, type FormProps } from "antd";
+import {
+   App,
+   Button,
+   Checkbox,
+   Form,
+   Input,
+   Modal,
+   type FormProps,
+} from "antd";
 import React, { type PropsWithChildren } from "react";
 import type { TCreateUserRes, User } from "@/shared";
 import type { UseMutateFunction } from "@tanstack/react-query";
@@ -17,6 +25,7 @@ export const CreateUser: React.FC<PropsWithChildren<IProps>> = ({
    createFn,
 }) => {
    const [isModalOpen, setIsModalOpen] = React.useState(false);
+
    const [form] = Form.useForm();
    const showModal = () => {
       setIsModalOpen(true);
@@ -24,17 +33,21 @@ export const CreateUser: React.FC<PropsWithChildren<IProps>> = ({
    const { message } = App.useApp();
 
    const onFinish: FormProps<User>["onFinish"] = (value: Omit<User, "id">) => {
-      createFn(value, {
-         onSuccess: () => {
-            message.success("User created successfully!");
-            setIsModalOpen(false);
-            form.resetFields();
-         },
-         onError: () => {
-            setIsModalOpen(false);
-            message.error("User not created!");
-         },
-      });
+      console.log({ ...value, is_admin: value.is_admin ? "True" : "False" });
+      createFn(
+         { ...value, is_admin: value.is_admin ? "True" : "False" },
+         {
+            onSuccess: () => {
+               message.success("User created successfully!");
+               setIsModalOpen(false);
+               form.resetFields();
+            },
+            onError: () => {
+               setIsModalOpen(false);
+               message.error("User not created!");
+            },
+         }
+      );
    };
 
    const handleCancel = () => {
@@ -45,7 +58,7 @@ export const CreateUser: React.FC<PropsWithChildren<IProps>> = ({
       <>
          <Button type="primary" size="large" onClick={showModal}>
             <AiOutlineUserAdd />
-            Add user
+            Create user
          </Button>
 
          <Modal
@@ -97,6 +110,9 @@ export const CreateUser: React.FC<PropsWithChildren<IProps>> = ({
                   ]}
                >
                   <Input.Password placeholder="Enter password" />
+               </Form.Item>
+               <Form.Item name="is_admin" valuePropName="checked">
+                  <Checkbox>Admin</Checkbox>
                </Form.Item>
             </Form>
          </Modal>

@@ -10,8 +10,7 @@ export type TReponse<T> = {
 // Login
 export type LoginReturnType = {
    token: string;
-   first_name: string;
-   last_name: string;
+   detail?: string
 };
 
 export type LoginValueType = {
@@ -38,6 +37,7 @@ export type User = {
    username: string;
    first_name: string;
    last_name: string;
+   is_admin: boolean | string
 };
 export type TCreateUserRes = {
    detail: string;
