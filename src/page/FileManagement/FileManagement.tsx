@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { App, Button, Flex, Tag } from "antd";
+import { Flex, Tag } from "antd";
 import { type TableProps } from "antd";
 import {
    DeleteButton,
@@ -21,7 +21,7 @@ import {
    type JsonViewData,
 } from "@/shared";
 import { FaDownload } from "react-icons/fa";
-import { SearchInput } from "@/features";
+import { SearchInput, StartMergeButton } from "@/features";
 import { BsFiletypeTxt } from "react-icons/bs";
 
 type TableRowSelection<T extends object = object> =
@@ -34,15 +34,13 @@ interface DataType extends File {
 export const FileManagement: React.FC = () => {
    const { styles } = useStyle();
 
-   const { message } = App.useApp();
-
    const [currentPage, setCurrentPage] = useState(1);
    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
    const searchValue = searchStore((state) => state.searchValue);
 
    const { data, isLoading } = fileApi.useGetAllFilesQuery(currentPage);
-   const { mutate: verifyFiles } = fileApi.useVerifyFilesMutation();
+   const { mutate: verifyFiles, isPending: verifyLoading } = fileApi.useVerifyFilesMutation();
    const { mutate: downloadFile } = fileApi.useDownloadFileMutation();
    const { mutate: deleteFile } = useDeleteUserMutation(
       AdminFileControl.DELETE_FILE,
@@ -50,23 +48,11 @@ export const FileManagement: React.FC = () => {
    );
    const { data: searchData, isLoading: searchLoading } =
       fileApi.useGetSearchFilesQuery(searchValue);
-   const { mutate: downloadMergedFn } = fileApi.useDownloadMergedFilesQuery();
    const {
       mutate: downloadJsonFn,
       data: jsonData,
       isPending: jsonLoading,
    } = fileApi.useDownloadJsonFileQuery();
-
-   const handleDownloadMerged = () => {
-      downloadMergedFn(undefined, {
-         onSuccess: () => {
-            message.success("Downloaded successfully");
-         },
-         onError: () => {
-            message.error("Error downloading file");
-         },
-      });
-   };
 
    const handleViewJson = React.useCallback((uuid: string) => {
       downloadJsonFn(uuid);
@@ -224,10 +210,7 @@ export const FileManagement: React.FC = () => {
       <Flex gap="middle" vertical>
          <TitlePage title={"File management"}>
             <SearchInput />
-            <Button onClick={handleDownloadMerged} type="primary" size="large">
-               Download merged files
-               <BsFiletypeTxt />
-            </Button>
+            <StartMergeButton />
             <Flex gap="middle">
                {(() => {
                   const status = getSelectedVerificationStatus();
@@ -238,6 +221,7 @@ export const FileManagement: React.FC = () => {
                            selectedRowKeys={selectedRowKeys}
                            setSelectedRowKeys={setSelectedRowKeys}
                            endpoint="false"
+                           isLoading={verifyLoading}
                         >
                            Cancel verification
                         </VerifyButton>
@@ -250,6 +234,7 @@ export const FileManagement: React.FC = () => {
                            selectedRowKeys={selectedRowKeys}
                            setSelectedRowKeys={setSelectedRowKeys}
                            endpoint="true"
+                           isLoading={verifyLoading}
                         >
                            Make verification
                         </VerifyButton>

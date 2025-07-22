@@ -15,6 +15,7 @@ interface IProps {
       unknown
    >;
    endpoint: "true" | "false";
+   isLoading: boolean;
 }
 
 export const VerifyButton: React.FC<PropsWithChildren<IProps>> = ({
@@ -23,12 +24,14 @@ export const VerifyButton: React.FC<PropsWithChildren<IProps>> = ({
    setSelectedRowKeys,
    selectedRowKeys,
    endpoint,
+   isLoading,
 }) => {
    const queryClient = useQueryClient();
    return (
       <Button
          type="primary"
          size="large"
+         loading={isLoading}
          onClick={async () => {
             await verifyFiles(
                { id: selectedRowKeys, endpoint },

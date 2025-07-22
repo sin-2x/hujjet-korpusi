@@ -18,6 +18,9 @@ export enum AdminFileControl {
    DOWNLOAD_TXT_FILE = "admin/download_admin_txt/",
    DOWNLOAD_MERGED_TXT = "admin/download_merged_txt/",
    DOWNLOAD_JSON_TXT_FILE = "admin/text/",
+   START_MERGE = "admin/start_merge/",
+   TASK_STATUS = "admin/task_status/",
+   DOWNLOAD_MERGED_FILE = "admin/download-merged/",
 }
 export enum AdminStatistics {
    GET_STATISTICS = "admin/statistika/",

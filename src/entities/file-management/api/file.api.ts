@@ -58,9 +58,15 @@ export const fileApi = {
          enabled: !!args.length,
       });
    },
-   useDownloadMergedFilesQuery: () => {
+   useDownloadJsonFileQuery: () => {
       return useMutation({
-         mutationFn: () => fileServices.downloadMergedTxt(),
+         mutationFn: (id: string) => fileServices.downloadJsonFile(id),
+      });
+   },
+   useDownloadMergedFileMutation: () => {
+      return useMutation({
+         mutationFn: (task_id: string) =>
+            fileServices.downloadMergedFile(task_id),
          onSuccess: ({ blob, filename }) => {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
@@ -73,9 +79,14 @@ export const fileApi = {
          },
       });
    },
-   useDownloadJsonFileQuery: () => {
+   useGetTaskStatusMutation: () => {
       return useMutation({
-         mutationFn: (id: string) => fileServices.downloadJsonFile(id),
+         mutationFn: (task_id: string) => fileServices.getTaskStatus(task_id),
+      });
+   },
+   useStartMergeMutation: () => {
+      return useMutation({
+         mutationFn: () => fileServices.startMerge(),
       });
    },
 };

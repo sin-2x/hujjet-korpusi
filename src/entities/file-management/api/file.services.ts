@@ -5,6 +5,8 @@ import {
    type DownloadEndpoint,
    type Files,
    type JsonViewData,
+   type TStartTaskResponse,
+   type TTaskStatusResponse,
 } from "@/shared";
 import type React from "react";
 
@@ -42,19 +44,40 @@ export const fileServices = {
       });
       return response.data;
    },
-   downloadMergedTxt: async () => {
-      const response = await $api.get(AdminFileControl.DOWNLOAD_MERGED_TXT, {
-         responseType: "blob",
-      });
-      return {
-         blob: response.data,
-         filename: getFilenameFromHeaders(response.headers),
-      };
-   },
+   // downloadMergedTxt: async () => {
+   //    const response = await $api.get(AdminFileControl.DOWNLOAD_MERGED_TXT, {
+   //       responseType: "blob",
+   //    });
+   //    return {
+   //       blob: response.data,
+   //       filename: getFilenameFromHeaders(response.headers),
+   //    };
+   // },
    downloadJsonFile: async (id: string): Promise<JsonViewData> => {
       const response = await $api.get(
          `${AdminFileControl.DOWNLOAD_JSON_TXT_FILE}${id}/`
       );
       return response.data;
+   },
+   startMerge: async (): Promise<TStartTaskResponse> => {
+      const response = await $api.post(AdminFileControl.START_MERGE);
+      return response.data;
+   },
+   getTaskStatus: async (task_id: string): Promise<TTaskStatusResponse> => {
+      const response = await $api.get(
+         `${AdminFileControl.TASK_STATUS}${task_id}`
+      );
+      console.log(response.data);
+      return response.data;
+   },
+   downloadMergedFile: async (task_id: string) => {
+      const response = await $api.get(AdminFileControl.DOWNLOAD_MERGED_FILE, {
+         responseType: "blob",
+         params: { task_id },
+      });
+      return {
+         blob: response.data,
+         filename: getFilenameFromHeaders(response.headers),
+      };
    },
 };

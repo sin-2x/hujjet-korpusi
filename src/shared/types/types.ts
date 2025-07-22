@@ -10,7 +10,7 @@ export type TReponse<T> = {
 // Login
 export type LoginReturnType = {
    token: string;
-   detail?: string
+   detail?: string;
 };
 
 export type LoginValueType = {
@@ -37,7 +37,7 @@ export type User = {
    username: string;
    first_name: string;
    last_name: string;
-   is_admin: boolean | string
+   is_admin: boolean | string;
 };
 export type TCreateUserRes = {
    detail: string;
@@ -63,6 +63,19 @@ export type File = {
    sentence_count: number;
 };
 export type Files = TReponse<File>;
+
+export enum FileStatus {
+   PENDING = "PENDING",
+   SUCCESS = "SUCCESS",
+   REJECTED = "REJECTED",
+}
+
+export type TTaskStatusResponse = {
+   task_id: string;
+   state: string;
+};
+
+export type TStartTaskResponse = Omit<TTaskStatusResponse, "state">;
 
 // Json view data response
 export type JsonViewData = {
